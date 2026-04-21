@@ -1316,9 +1316,9 @@ function verifyCode() {
   btn.textContent = '⏳ جارٍ التحقق...'; btn.disabled = true;
 
   // Apps Script Web App URL للتحقق من الكود
-  const VERIFY_URL = 'YOUR_APPS_SCRIPT_WEBAPP_URL';
+  const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbxddADLIlvfVkSaRq7wjfkWs0kEyYhvAbS35TyOTOfQYZ3qux4mjIGKnmqA5pB_kdnD/exec';
 
-  if (VERIFY_URL === 'YOUR_APPS_SCRIPT_WEBAPP_URL') {
+  if (VERIFY_URL === 'https://script.google.com/macros/s/AKfycbxddADLIlvfVkSaRq7wjfkWs0kEyYhvAbS35TyOTOfQYZ3qux4mjIGKnmqA5pB_kdnD/exec') {
     // وضع التطوير: قبول أي كود بتنسيق صحيح (للاختبار)
     btn.textContent = 'تحقق من الكود ←'; btn.disabled = false;
     errEl.textContent = '⚠️ لم يتم ربط Web App بعد — راجع دليل الإعداد';
