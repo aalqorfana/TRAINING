@@ -389,8 +389,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
       <label class="reg-label">الوظيفة *</label>
       <select class="reg-select" id="r-role">
         <option value="">-- اختر وظيفتك --</option>
-        <option>معلم</option><option>منسق</option>
-        <option>مشرف تربوي</option><option>إداري</option>
+        <option value="معلم">معلم</option>
+        <option value="منسق">منسق</option>
+        <option value="مشرف تربوي">مشرف تربوي</option>
+        <option value="إداري">إداري</option>
       </select>
     </div>
     <div class="reg-field">
@@ -1360,11 +1362,18 @@ function submitReg() {
 
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScYWKmdARi-fQZ8RCUayK2QuS04qbAIVS5i3EgGSBgBwIa1Ww/formResponse';
   const fd = new FormData();
-  fd.append('entry.655653386',  n);
-  fd.append('entry.2106187489', e);
-  fd.append('entry.440095993',  sc);
-  fd.append('entry.1617408928', ro);
-  fd.append('entry.956228020',  sub + ' | ' + st);
+  fd.append('entry.655653386',  n);          // الاسم
+  fd.append('entry.2106187489', e);          // البريد
+  fd.append('entry.440095993',  sc);         // المدرسة
+  // الوظيفة — entry.2120408794
+  if (ro === 'معلم' || ro === 'منسق') {
+    fd.append('entry.2120408794', ro);
+  } else {
+    fd.append('entry.2120408794', '__other_option__');
+    fd.append('entry.2120408794.other_option_response', ro);
+  }
+  fd.append('entry.1617408928', sub);        // المادة
+  fd.append('entry.956228020',  st);         // المرحلة الدراسية
   fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
     .finally(() => {
       btn.style.display = 'none';
@@ -1515,24 +1524,19 @@ function submitCert() {
 }
 
 function sendReport() {
-  // ── إرسال تقرير الإتمام وطلب الشهادة لـ Google Forms ─────────────
-  // نُعيد استخدام نفس الفورم — نضيف النتيجة ضمن حقل "المادة" الموسَّع
-  // أو نُضمِّنها في حقل الاسم بتنسيق واضح لتمييزها في الـ Sheet
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScYWKmdARi-fQZ8RCUayK2QuS04qbAIVS5i3EgGSBgBwIa1Ww/formResponse';
   const pct   = Math.round(S.qScore / QUIZ.length * 100);
   const pass  = pct >= 70 ? 'ناجح ✓' : 'راسب ✗';
   const units = ['u1','u2','u3','u4','prompts'].filter(k => S.done[k]).length;
   const ts    = new Date().toLocaleString('ar-QA');
 
-  // نُرسل الإدخال كـ "طلب شهادة" مع تضمين النتيجة في الحقول
   const fd = new FormData();
-  fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);           // الاسم + علامة طلب شهادة
-  fd.append('entry.2106187489', LEARNER.email);                             // البريد
-  fd.append('entry.440095993',  LEARNER.school);                            // المدرسة
-  fd.append('entry.1617408928', LEARNER.role || 'معلم');                    // الوظيفة
-  fd.append('entry.956228020',
-    `${LEARNER.subject} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`
-  );  // المادة + تقرير كامل
+  fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);  // الاسم
+  fd.append('entry.2106187489', LEARNER.email);                    // البريد
+  fd.append('entry.440095993',  LEARNER.school);                   // المدرسة
+  fd.append('entry.2120408794', LEARNER.role || 'معلم');           // الوظيفة
+  fd.append('entry.1617408928', `${LEARNER.subject} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`); // المادة + تقرير
+  fd.append('entry.956228020',  LEARNER.stage || '');              // المرحلة
 
   fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
     .catch(() => {});
