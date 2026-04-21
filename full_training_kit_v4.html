@@ -1299,48 +1299,37 @@ function verifyCode() {
     errEl.style.display = 'block'; return;
   }
 
-  // ── تحقق من الـ Sheet عبر Apps Script Web App URL ──────────────
-  // في الإنتاج: يُستبدل هذا بـ fetch لـ Apps Script endpoint
-  // هنا: نتحقق من localStorage أولاً (تم التحقق سابقاً)
+  // تحقق من localStorage أولاً (كود سبق التحقق منه)
   const saved = localStorage.getItem('kit_access_' + raw);
   if (saved) {
-    const data = JSON.parse(saved);
-    LEARNER = data;
-    launchKit();
-    return;
+    try {
+      LEARNER = JSON.parse(saved);
+      launchKit();
+      return;
+    } catch(e) { localStorage.removeItem('kit_access_' + raw); }
   }
 
-  // ── إرسال الكود للتحقق عبر Apps Script ──
+  // ── تحقق من الـ Sheet عبر Apps Script Web App ──
   errEl.style.display = 'none';
   const btn = document.querySelector('#code-screen .reg-btn');
   btn.textContent = '⏳ جارٍ التحقق...'; btn.disabled = true;
 
-  // Apps Script Web App URL للتحقق من الكود
   const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
 
-  if (VERIFY_URL === 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec') {
-    // وضع التطوير: قبول أي كود بتنسيق صحيح (للاختبار)
-    btn.textContent = 'تحقق من الكود ←'; btn.disabled = false;
-    errEl.textContent = '⚠️ لم يتم ربط Web App بعد — راجع دليل الإعداد';
-    errEl.style.display = 'block';
-    return;
-  }
-
-  fetch(`${VERIFY_URL}?code=${encodeURIComponent(raw)}`)
-    .then(r => r.json())
-    .then(data => {
+  fetch(VERIFY_URL + '?code=' + encodeURIComponent(raw))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
       btn.textContent = 'تحقق من الكود ←'; btn.disabled = false;
       if (data.valid) {
         LEARNER = data.learner;
-        // احفظ في localStorage لتسريع الدخول التالي
         localStorage.setItem('kit_access_' + raw, JSON.stringify(LEARNER));
         launchKit();
       } else {
-        errEl.textContent = '❌ الكود غير صحيح أو منتهي الصلاحية — تحقق من إيميلك';
+        errEl.textContent = '❌ الكود غير صحيح — تحقق من الإيميل الذي أرسله الميسّر';
         errEl.style.display = 'block';
       }
     })
-    .catch(() => {
+    .catch(function() {
       btn.textContent = 'تحقق من الكود ←'; btn.disabled = false;
       errEl.textContent = '⚠️ تعذّر الاتصال — تحقق من الإنترنت وأعد المحاولة';
       errEl.style.display = 'block';
@@ -1383,8 +1372,6 @@ function submitReg() {
     });
 }
 
-function sendReg() {} // مستخدمة بعد verifyCode الآن
-
 const QUIZ = [
   { q:'ما الركن الأكثر تأثيراً في الصيغة الذهبية التربوية عند تحديد عمق الإجابة ومصطلحاتها؟', opts:['الإخراج المحدد','الدور التربوي المتخصص','السياق التربوي','المهمة التعليمية'], correct:1, exp:'الدور التربوي هو أقوى ركن — "مصمم مناهج علوم خبير" ينتج نتيجة مختلفة جوهرياً عن "أنت معلم" لأنه يحدد الأسلوب والعمق والمصطلحات المستخدمة.' },
   { q:'معلمة أرادت تحويل درس "دورة الصخور" لنشاط — الطلاب سيتنقلون في الفصل ويبحثون عن بطاقات مخفية. أي نوع نشاط يصف هذا بدقة؟', opts:['Interactive Storytelling — لأن هناك قصة','Role Play — لأنهم يمثّلون أدواراً','Scavenger Hunt — لأنهم يبحثون عن عناصر','Exit Ticket — لأنه تقييم ختامي'], correct:2, exp:'Scavenger Hunt — علامته الفارقة: الطلاب يبحثون عن معلومات أو بطاقات مخفية. الحركة والبحث هما المميّزان الرئيسيان.' },
@@ -1396,28 +1383,9 @@ const QUIZ = [
 const S = { done:{}, qa:{}, qSent:false, qScore:0 };
 
 // ═══════════════════════════════════════════
-// REGISTRATION
+// STATE & LEARNER
 // ═══════════════════════════════════════════
 let LEARNER = { name:'', email:'', school:'', role:'', subject:'', stage:'' };
-
-function sendReg() {
-  // ── إرسال بيانات التسجيل لـ Google Forms ──────────────────────────
-  // حقول الفورم:
-  //   entry.655653386  = الاسم الكامل
-  //   entry.2106187489 = البريد الإلكتروني
-  //   entry.440095993  = المدرسة
-  //   entry.1617408928 = الوظيفة
-  //   entry.956228020  = المادة
-  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScYWKmdARi-fQZ8RCUayK2QuS04qbAIVS5i3EgGSBgBwIa1Ww/formResponse';
-  const fd = new FormData();
-  fd.append('entry.655653386',  LEARNER.name);
-  fd.append('entry.2106187489', LEARNER.email);
-  fd.append('entry.440095993',  LEARNER.school);
-  fd.append('entry.1617408928', LEARNER.role || 'معلم');
-  fd.append('entry.956228020',  LEARNER.subject);
-  fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
-    .catch(() => {}); // no-cors — لا توجد استجابة قابلة للقراءة، هذا طبيعي
-}
 
 // ═══════════════════════════════════════════
 // NAVIGATION
