@@ -1586,7 +1586,7 @@ function sendReport() {
   doSend();
 }
 
-// إرسال مباشر للـ Web App (نسخة احتياطية عن الفورم)
+// إرسال مباشر للـ Web App عبر GET — متوافق مع CORS
 function sendReportDirect() {
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
   const pct   = Math.round(S.qScore / QUIZ.length * 100);
@@ -1594,8 +1594,9 @@ function sendReportDirect() {
   const units = ['u1','u2','u3','u4','prompts'].filter(k => S.done[k]).length;
   const ts    = new Date().toLocaleString('ar-QA');
 
-  const payload = {
-    isCert:  true,
+  // نستخدم GET مع URL params — هذا هو الوحيد الذي يعمل بدون CORS
+  const params = new URLSearchParams({
+    action:  'cert',
     name:    LEARNER.name,
     email:   LEARNER.email,
     school:  LEARNER.school,
@@ -1603,29 +1604,26 @@ function sendReportDirect() {
     stage:   LEARNER.stage || '',
     subject: LEARNER.subject || '',
     score:   S.qScore,
+    total:   QUIZ.length,
     pct:     pct,
     pass_:   pass_,
     units:   units,
     ts:      ts
-  };
-
-  fetch(WEBAPP_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.ok) {
-      console.log('Direct report sent OK');
-      toast('✅ وصلت بياناتك للميسّر بنجاح');
-    } else {
-      console.warn('Direct report server error:', data.error);
-    }
-  })
-  .catch(err => {
-    console.warn('Direct report failed:', err);
   });
+
+  fetch(WEBAPP_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        console.log('Report sent OK via GET');
+        toast('✅ وصلت نتيجتك للميسّر بنجاح');
+      } else {
+        console.warn('Report GET error:', data.error || data);
+      }
+    })
+    .catch(err => {
+      console.warn('Report GET failed:', err);
+    });
 }
 
 function renderCertResult(area) {
