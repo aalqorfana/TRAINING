@@ -1531,15 +1531,40 @@ function sendReport() {
   const ts    = new Date().toLocaleString('ar-QA');
 
   const fd = new FormData();
-  fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);  // B — الاسم
-  fd.append('entry.2106187489', LEARNER.email);                    // C — البريد
-  fd.append('entry.440095993',  LEARNER.school);                   // D — المدرسة
-  fd.append('entry.2120408794', LEARNER.role || 'معلم');           // E — الوظيفة
-  fd.append('entry.956228020',  LEARNER.stage || '');              // F — المرحلة
-  fd.append('entry.1617408928', `${LEARNER.subject} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`); // G — المادة + تقرير
+  fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);
+  fd.append('entry.2106187489', LEARNER.email);
+  fd.append('entry.440095993',  LEARNER.school);
 
-  fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
-    .catch(() => {});
+  // حقل الوظيفة: Radio button يقبل "معلم" أو "منسق" فقط — نفس منطق submitReg
+  const role = (LEARNER.role || 'معلم').toString().trim();
+  if (role === 'معلم' || role === 'منسق') {
+    fd.append('entry.2120408794', role);
+  } else {
+    fd.append('entry.2120408794', '__other_option__');
+    fd.append('entry.2120408794.other_option_response', role);
+  }
+
+  // المرحلة الدراسية — قد تكون فارغة إذا لم تُحفظ في ورقة الأكواد
+  fd.append('entry.956228020', LEARNER.stage || '');
+
+  // المادة + تقرير النتيجة الكامل
+  fd.append('entry.1617408928',
+    `${LEARNER.subject || ''} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`
+  );
+
+  // إرسال مع إعادة المحاولة التلقائية
+  function doSend(attempt) {
+    fetch(FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
+      .then(() => {
+        localStorage.setItem('cert_sent_' + LEARNER.email, JSON.stringify({
+          ts: ts, pct: pct, score: S.qScore, units: units, name: LEARNER.name
+        }));
+      })
+      .catch(() => {
+        if (attempt < 3) setTimeout(() => doSend(attempt + 1), 3000);
+      });
+  }
+  doSend(1);
 }
 
 function renderCertResult(area) {
