@@ -1519,8 +1519,12 @@ function submitCert() {
   document.getElementById('chk-cert').textContent = '✓';
   document.getElementById('nav-cert').classList.add('done');
   document.getElementById('hdr-done').style.display = 'flex';
-  sendReport();
   renderCertResult(document.getElementById('cert-area'));
+  // إرسال النتيجة للشيت: مزدوج — الفورم + Web App مباشرة
+  setTimeout(() => {
+    sendReport();           // عبر Google Form (الطريقة الأصلية)
+    sendReportDirect();     // عبر Web App مباشرة (نسخة احتياطية)
+  }, 500);
 }
 
 function sendReport() {
@@ -1530,12 +1534,22 @@ function sendReport() {
   const units = ['u1','u2','u3','u4','prompts'].filter(k => S.done[k]).length;
   const ts    = new Date().toLocaleString('ar-QA');
 
+  // حفظ النتيجة في localStorage فوراً كنسخة احتياطية
+  const reportData = {
+    name: LEARNER.name, email: LEARNER.email, school: LEARNER.school,
+    role: LEARNER.role || 'معلم', stage: LEARNER.stage || '',
+    subject: LEARNER.subject || '', pct: pct, score: S.qScore,
+    total: QUIZ.length, pass: pass, units: units, ts: ts, sent: false
+  };
+  localStorage.setItem('cert_report_' + LEARNER.email, JSON.stringify(reportData));
+
+  // بناء FormData
   const fd = new FormData();
   fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);
   fd.append('entry.2106187489', LEARNER.email);
   fd.append('entry.440095993',  LEARNER.school);
 
-  // حقل الوظيفة: Radio button يقبل "معلم" أو "منسق" فقط — نفس منطق submitReg
+  // حقل الوظيفة: Radio button — نفس منطق submitReg
   const role = (LEARNER.role || 'معلم').toString().trim();
   if (role === 'معلم' || role === 'منسق') {
     fd.append('entry.2120408794', role);
@@ -1543,28 +1557,75 @@ function sendReport() {
     fd.append('entry.2120408794', '__other_option__');
     fd.append('entry.2120408794.other_option_response', role);
   }
-
-  // المرحلة الدراسية — قد تكون فارغة إذا لم تُحفظ في ورقة الأكواد
-  fd.append('entry.956228020', LEARNER.stage || '');
-
-  // المادة + تقرير النتيجة الكامل
+  fd.append('entry.956228020',  LEARNER.stage || '');
   fd.append('entry.1617408928',
     `${LEARNER.subject || ''} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`
   );
 
-  // إرسال مع إعادة المحاولة التلقائية
-  function doSend(attempt) {
+  // إرسال مع إعادة المحاولة + toast للمتدرب
+  let attempt = 0;
+  function doSend() {
+    attempt++;
     fetch(FORM_URL, { method: 'POST', body: fd, mode: 'no-cors' })
       .then(() => {
-        localStorage.setItem('cert_sent_' + LEARNER.email, JSON.stringify({
-          ts: ts, pct: pct, score: S.qScore, units: units, name: LEARNER.name
-        }));
+        // no-cors: نعتبر الإرسال ناجحاً عند عدم وجود خطأ في الشبكة
+        reportData.sent = true;
+        reportData.sentAt = new Date().toISOString();
+        localStorage.setItem('cert_report_' + LEARNER.email, JSON.stringify(reportData));
+        if (attempt === 1) toast('✅ تم إرسال نتيجتك للميسّر تلقائياً');
       })
-      .catch(() => {
-        if (attempt < 3) setTimeout(() => doSend(attempt + 1), 3000);
+      .catch((err) => {
+        console.error('sendReport attempt ' + attempt + ' failed:', err);
+        if (attempt < 3) {
+          setTimeout(doSend, 4000);
+        } else {
+          toast('⚠️ تعذّر الإرسال — تحقق من الإنترنت');
+        }
       });
   }
-  doSend(1);
+  doSend();
+}
+
+// إرسال مباشر للـ Web App (نسخة احتياطية عن الفورم)
+function sendReportDirect() {
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
+  const pct   = Math.round(S.qScore / QUIZ.length * 100);
+  const pass_ = pct >= 70 ? 'ناجح ✓' : 'راسب ✗';
+  const units = ['u1','u2','u3','u4','prompts'].filter(k => S.done[k]).length;
+  const ts    = new Date().toLocaleString('ar-QA');
+
+  const payload = {
+    isCert:  true,
+    name:    LEARNER.name,
+    email:   LEARNER.email,
+    school:  LEARNER.school,
+    role:    LEARNER.role || 'معلم',
+    stage:   LEARNER.stage || '',
+    subject: LEARNER.subject || '',
+    score:   S.qScore,
+    pct:     pct,
+    pass_:   pass_,
+    units:   units,
+    ts:      ts
+  };
+
+  fetch(WEBAPP_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      console.log('Direct report sent OK');
+      toast('✅ وصلت بياناتك للميسّر بنجاح');
+    } else {
+      console.warn('Direct report server error:', data.error);
+    }
+  })
+  .catch(err => {
+    console.warn('Direct report failed:', err);
+  });
 }
 
 function renderCertResult(area) {
