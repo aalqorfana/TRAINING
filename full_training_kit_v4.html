@@ -1362,18 +1362,18 @@ function submitReg() {
 
   const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScYWKmdARi-fQZ8RCUayK2QuS04qbAIVS5i3EgGSBgBwIa1Ww/formResponse';
   const fd = new FormData();
-  fd.append('entry.655653386',  n);          // الاسم
-  fd.append('entry.2106187489', e);          // البريد
-  fd.append('entry.440095993',  sc);         // المدرسة
-  // الوظيفة — entry.2120408794
+  fd.append('entry.655653386',  n);    // B — الاسم
+  fd.append('entry.2106187489', e);    // C — البريد
+  fd.append('entry.440095993',  sc);   // D — المدرسة
+  // E — الوظيفة (entry.2120408794) — radio button
   if (ro === 'معلم' || ro === 'منسق') {
     fd.append('entry.2120408794', ro);
   } else {
     fd.append('entry.2120408794', '__other_option__');
     fd.append('entry.2120408794.other_option_response', ro);
   }
-  fd.append('entry.1617408928', sub);        // المادة
-  fd.append('entry.956228020',  st);         // المرحلة الدراسية
+  fd.append('entry.956228020',  st);   // F — المرحلة الدراسية
+  fd.append('entry.1617408928', sub);  // G — المادة
   fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
     .finally(() => {
       btn.style.display = 'none';
@@ -1531,12 +1531,12 @@ function sendReport() {
   const ts    = new Date().toLocaleString('ar-QA');
 
   const fd = new FormData();
-  fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);  // الاسم
-  fd.append('entry.2106187489', LEARNER.email);                    // البريد
-  fd.append('entry.440095993',  LEARNER.school);                   // المدرسة
-  fd.append('entry.2120408794', LEARNER.role || 'معلم');           // الوظيفة
-  fd.append('entry.1617408928', `${LEARNER.subject} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`); // المادة + تقرير
-  fd.append('entry.956228020',  LEARNER.stage || '');              // المرحلة
+  fd.append('entry.655653386',  `[طلب شهادة] ${LEARNER.name}`);  // B — الاسم
+  fd.append('entry.2106187489', LEARNER.email);                    // C — البريد
+  fd.append('entry.440095993',  LEARNER.school);                   // D — المدرسة
+  fd.append('entry.2120408794', LEARNER.role || 'معلم');           // E — الوظيفة
+  fd.append('entry.956228020',  LEARNER.stage || '');              // F — المرحلة
+  fd.append('entry.1617408928', `${LEARNER.subject} | نتيجة: ${S.qScore}/${QUIZ.length} (${pct}%) ${pass} | وحدات: ${units}/5 | ${ts}`); // G — المادة + تقرير
 
   fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
     .catch(() => {});
