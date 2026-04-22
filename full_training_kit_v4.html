@@ -327,6 +327,213 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
   .cs-cmp{grid-template-columns:1fr}.cover-title{font-size:var(--2xl)}
 }
 .sdiv{height:1px;background:var(--b);margin:20px 0}
+
+/* ── الاستبانة القبلية ───────────────────────── */
+#survey-screen {
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:28px 16px 60px;
+  background:var(--bg);
+}
+.survey-wrap {
+  width:100%;
+  max-width:760px;
+}
+.survey-header {
+  background:linear-gradient(135deg,var(--bg3),var(--bg4));
+  border:1px solid var(--bt);
+  border-radius:var(--rxl);
+  padding:28px 32px 22px;
+  margin-bottom:22px;
+  text-align:center;
+}
+.survey-badge {
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  background:var(--td);
+  border:1px solid var(--bt);
+  color:var(--teal2);
+  font-size:12px;
+  font-weight:700;
+  padding:5px 14px;
+  border-radius:20px;
+  margin-bottom:12px;
+  letter-spacing:.5px;
+}
+.survey-title {
+  font-size:22px;
+  font-weight:900;
+  color:var(--text);
+  margin-bottom:6px;
+}
+.survey-sub {
+  font-size:14px;
+  color:var(--text2);
+  line-height:1.8;
+}
+.survey-progress-wrap {
+  background:var(--bg3);
+  border:1px solid var(--b2);
+  border-radius:var(--rxl);
+  padding:14px 24px;
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.survey-prog-bar {
+  flex:1;
+  height:8px;
+  background:var(--bg4);
+  border-radius:10px;
+  overflow:hidden;
+}
+.survey-prog-fill {
+  height:100%;
+  background:linear-gradient(90deg,var(--teal),var(--teal2));
+  border-radius:10px;
+  transition:width .4s ease;
+}
+.survey-prog-label {
+  font-size:13px;
+  font-weight:700;
+  color:var(--teal2);
+  white-space:nowrap;
+}
+.survey-axis {
+  background:var(--bg3);
+  border:1px solid var(--b2);
+  border-radius:var(--rxl);
+  padding:22px 26px;
+  margin-bottom:18px;
+}
+.survey-axis-title {
+  font-size:15px;
+  font-weight:800;
+  color:var(--amber2);
+  margin-bottom:16px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--b2);
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.survey-item {
+  margin-bottom:20px;
+  padding-bottom:18px;
+  border-bottom:1px solid var(--b);
+}
+.survey-item:last-child {
+  margin-bottom:0;
+  padding-bottom:0;
+  border-bottom:none;
+}
+.survey-q {
+  font-size:14px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:12px;
+  line-height:1.8;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.survey-q-num {
+  background:var(--td);
+  color:var(--teal2);
+  font-size:12px;
+  font-weight:800;
+  padding:2px 9px;
+  border-radius:10px;
+  white-space:nowrap;
+  margin-top:2px;
+}
+.survey-scale {
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:7px;
+}
+.survey-opt {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:5px;
+  cursor:pointer;
+  padding:8px 4px;
+  border-radius:10px;
+  border:1px solid var(--b2);
+  background:var(--bg4);
+  transition:all .2s;
+  font-size:12px;
+  color:var(--text2);
+  text-align:center;
+  line-height:1.4;
+  user-select:none;
+}
+.survey-opt:hover {
+  border-color:var(--teal);
+  background:var(--td);
+  color:var(--teal2);
+}
+.survey-opt.selected {
+  border-color:var(--teal);
+  background:var(--tg);
+  color:var(--teal2);
+  font-weight:700;
+}
+.survey-opt-dot {
+  width:20px;
+  height:20px;
+  border-radius:50%;
+  border:2px solid var(--b2);
+  transition:all .2s;
+}
+.survey-opt.selected .survey-opt-dot {
+  border-color:var(--teal);
+  background:var(--teal);
+  box-shadow:0 0 8px rgba(10,191,173,0.4);
+}
+.survey-warning {
+  background:var(--rd);
+  border:1px solid var(--rose);
+  border-radius:10px;
+  padding:12px 18px;
+  font-size:13px;
+  color:var(--rose);
+  font-weight:700;
+  text-align:center;
+  display:none;
+  margin-bottom:14px;
+}
+.survey-submit-btn {
+  width:100%;
+  padding:17px;
+  background:linear-gradient(135deg,var(--teal),#08b09e);
+  border:none;
+  border-radius:var(--rl);
+  color:#0C1320;
+  font-size:16px;
+  font-weight:800;
+  cursor:pointer;
+  font-family:var(--font);
+  transition:all .25s;
+  box-shadow:var(--stl);
+  margin-top:8px;
+}
+.survey-submit-btn:hover {
+  transform:translateY(-2px);
+  box-shadow:0 8px 36px rgba(10,191,173,0.32);
+}
+.survey-submit-btn:disabled {
+  opacity:.6;
+  cursor:not-allowed;
+  transform:none;
+}
+
 </style>
 </head>
 <body>
@@ -427,6 +634,63 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
     </div>
 
     <div class="reg-note">بياناتك محمية · تُستخدم فقط لأغراض البرنامج التدريبي</div>
+  </div>
+</div>
+
+
+<!-- ═══════════ SCREEN 3: الاستبانة القبلية (إلزامية) ═══════════ -->
+<div id="survey-screen" style="display:none">
+  <div class="survey-wrap">
+
+    <div class="survey-header">
+      <div class="survey-badge">📋 خطوة إلزامية قبل البدء</div>
+      <div class="survey-title">الاستبانة القبلية</div>
+      <div class="survey-sub">
+        يُرجى الإجابة بصدق عن جميع العبارات — إجاباتك سرية وتُستخدم لأغراض البحث التربوي فقط.<br>
+        <strong style="color:var(--amber2)">لا يمكن بدء التدريب إلا بعد إكمال هذه الاستبانة.</strong>
+      </div>
+    </div>
+
+    <div class="survey-progress-wrap">
+      <div style="font-size:13px;color:var(--text2)">تقدّمك في الاستبانة:</div>
+      <div class="survey-prog-bar">
+        <div class="survey-prog-fill" id="survey-prog-fill" style="width:0%"></div>
+      </div>
+      <div class="survey-prog-label" id="survey-prog-label">0 / 17</div>
+    </div>
+
+    <!-- المحور الأول -->
+    <div class="survey-axis">
+      <div class="survey-axis-title">
+        <span>⚡</span> المحور الأول: الكفاءة التشغيلية والعبء الوظيفي
+      </div>
+      <div id="sq-axis1"></div>
+    </div>
+
+    <!-- المحور الثاني -->
+    <div class="survey-axis">
+      <div class="survey-axis-title">
+        <span>🎯</span> المحور الثاني: الممارسات الصفية واستراتيجيات التدريس
+      </div>
+      <div id="sq-axis2"></div>
+    </div>
+
+    <!-- المحور الثالث -->
+    <div class="survey-axis">
+      <div class="survey-axis-title">
+        <span>🌱</span> المحور الثالث: الانغماس المهني والتجديد الذاتي
+      </div>
+      <div id="sq-axis3"></div>
+    </div>
+
+    <div class="survey-warning" id="survey-warning">
+      ⚠️ يُرجى الإجابة عن جميع العبارات قبل المتابعة
+    </div>
+
+    <button class="survey-submit-btn" onclick="submitSurvey()" id="survey-submit-btn">
+      إرسال الاستبانة والبدء بالتدريب ←
+    </button>
+
   </div>
 </div>
 
@@ -1341,7 +1605,8 @@ function verifyCode() {
 function launchKit() {
   document.getElementById('code-screen').style.display  = 'none';
   document.getElementById('reg-screen').style.display   = 'none';
-  document.getElementById('app').style.display          = 'block';
+
+  // ── تهيئة عناصر الهيدر دائماً ─────────────────────────────
   document.getElementById('hdr-name').textContent    = 'أهلاً، ' + LEARNER.name;
   document.getElementById('sb-name').textContent     = LEARNER.name;
   document.getElementById('hdr-subject').textContent = (LEARNER.subject || '') + (LEARNER.stage ? ' · ' + LEARNER.stage : '');
@@ -1352,8 +1617,9 @@ function launchKit() {
     // نسخ الحالة المحفوظة
     Object.assign(S.done,  saved.done  || {});
     Object.assign(S.qa,    saved.qa    || {});
-    S.qSent  = saved.qSent  || false;
-    S.qScore = saved.qScore || 0;
+    S.qSent      = saved.qSent      || false;
+    S.qScore     = saved.qScore     || 0;
+    S.surveyDone = saved.surveyDone || false;
 
     // تحديث واجهة الوحدات
     ['u1','u2','u3','u4','prompts'].forEach(k => {
@@ -1373,6 +1639,7 @@ function launchKit() {
 
     // ── وضع الخريج: أنهى التدريب وحصل على شهادة ──
     if (S.qSent) {
+      document.getElementById('app').style.display = 'block';
       showGraduateMode(saved.savedAt);
       return;
     }
@@ -1384,13 +1651,34 @@ function launchKit() {
     const doneCount  = ['u1','u2','u3','u4','prompts'].filter(k => S.done[k]).length;
 
     if (doneCount > 0) {
+      // لديه تقدم — الاستبانة مكتملة بالتأكيد، استأنف مباشرة
+      document.getElementById('app').style.display = 'block';
       toast('▶ استكمال من ' + (pageNames[resumePage] || resumePage) + ' — تقدمك: ' + Math.round(doneCount/5*100) + '%');
       setTimeout(() => go(resumePage), 600);
     } else {
-      go('u1');
+      // لا تقدم محفوظ — تحقق من الاستبانة
+      checkAndShowSurvey();
     }
   } else {
+    // مستخدم جديد — تحقق من الاستبانة
+    checkAndShowSurvey();
+  }
+}
+
+// ── التحقق من الاستبانة قبل فتح الحقيبة ──────────────────────
+function checkAndShowSurvey() {
+  const surveyKey = 'survey_pre_' + LEARNER.email;
+  const done = localStorage.getItem(surveyKey);
+  if (done || (S && S.surveyDone)) {
+    // الاستبانة مكتملة — افتح الحقيبة مباشرة
+    document.getElementById('app').style.display = 'block';
     go('u1');
+  } else {
+    // الاستبانة لم تُكمل — اعرض شاشة الاستبانة
+    document.getElementById('survey-screen').style.display = 'flex';
+    renderSurvey();
+    // تمرير للأعلى
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
 
@@ -1486,7 +1774,7 @@ const QUIZ = [
   { q:'معلم لديه صف متعدد الجنسيات وأداء متنوع. أين يضع هذه المعلومات في أمره لكلاود؟', opts:['لا يذكرها — كلاود يعرف ذلك تلقائياً','في العنوان فقط','في ركن السياق التربوي مع تفصيل التوزيع والخلفيات','في نهاية الأمر كملاحظة'], correct:2, exp:'ركن السياق التربوي هو المكان الصحيح — يشمل: عدد الطلاب + توزيع المستويات + الخلفيات + أي تحديات. كلما كان السياق أدق، كان الناتج أكثر تخصيصاً لصفك.' },
 ];
 
-const S = { done:{}, qa:{}, qSent:false, qScore:0 };
+const S = { done:{}, qa:{}, qSent:false, qScore:0, surveyDone:false };
 
 // ═══════════════════════════════════════════
 // حفظ واستعادة تقدم المتدرب
@@ -1498,12 +1786,13 @@ function progressKey() {
 function saveProgress() {
   try {
     const snap = {
-      done:    S.done,
-      qa:      S.qa,
-      qSent:   S.qSent,
-      qScore:  S.qScore,
-      lastPage: window._currentPage || 'u1',
-      savedAt: new Date().toISOString()
+      done:       S.done,
+      qa:         S.qa,
+      qSent:      S.qSent,
+      qScore:     S.qScore,
+      surveyDone: S.surveyDone || false,
+      lastPage:   window._currentPage || 'u1',
+      savedAt:    new Date().toISOString()
     };
     localStorage.setItem(progressKey(), JSON.stringify(snap));
   } catch(e) { console.warn('saveProgress failed:', e); }
@@ -1525,6 +1814,219 @@ function clearProgress() {
 // STATE & LEARNER
 // ═══════════════════════════════════════════
 let LEARNER = { name:'', email:'', school:'', role:'', subject:'', stage:'' };
+
+// ═══════════════════════════════════════════════════════════════
+// الاستبانة القبلية — البيانات والمنطق
+// ═══════════════════════════════════════════════════════════════
+
+const SURVEY_AXES = [
+  {
+    id: 'axis1',
+    containerId: 'sq-axis1',
+    items: [
+      'أُحضِّر للدروس اليومية في غضون ما يتراوح بين (30–45) دقيقة في المتوسط.',
+      'أجد صعوبة في صياغة اختبارات تقييمية متنوعة الأنماط بصورة منتظمة.',
+      'يستغرق إعداد تقارير الطلاب وقتاً يُلقي بأثر سلبي على تخطيطي التدريسي.',
+      'أشعر بالاستنزاف المهني في نهاية الأسبوع جراء الأعباء الإدارية والتحضيرية.',
+      'أستطيع إنتاج مواد تعليمية متمايزة تُراعي مستويات طلابي المختلفة بكفاءة.',
+      'أتمكن من توظيف تقنيات الذكاء الاصطناعي في تصميم مواردي التدريسية.',
+      'لديّ ثقة كافية بقدرتي على تكييف المحتوى الدراسي لاحتياجات التعلم المختلفة.',
+    ]
+  },
+  {
+    id: 'axis2',
+    containerId: 'sq-axis2',
+    items: [
+      'أُنوِّع في استراتيجيات التدريس داخل الحصة الواحدة بانتظام.',
+      'أُصمِّم أنشطة تُحفّز التفكير النقدي والإبداعي لدى طلابي.',
+      'أوظّف المشاريع التكاملية وربط التخصصات في تدريسي.',
+      'أستطيع تقديم تغذية راجعة فردية لكل طالب ضمن زمن الحصة.',
+      'يتاح لي توقيت كافٍ لإجراء التقييم التكويني المستمر أثناء الدرس.',
+    ]
+  },
+  {
+    id: 'axis3',
+    containerId: 'sq-axis3',
+    items: [
+      'أبحث بانتظام عن أدوات وتقنيات تعليمية حديثة لتطوير ممارستي.',
+      'أشعر بالحماس والرغبة في تجريب أساليب تدريسية مبتكرة.',
+      'أُشارك بفاعلية في مجتمعات التعلم المهني مع زملائي.',
+      'أُدرك أن الذكاء الاصطناعي شريك استراتيجي وليس بديلاً عن الكفاءة المهنية.',
+      'أشعر أن مستوى تطوري المهني يسير بوتيرة مُرضِية وفق متطلبات المرحلة.',
+    ]
+  }
+];
+
+const SCALE_LABELS = [
+  { val: 5, label: 'موافق بشدة' },
+  { val: 4, label: 'موافق' },
+  { val: 3, label: 'محايد' },
+  { val: 2, label: 'غير موافق' },
+  { val: 1, label: 'غير موافق بشدة' },
+];
+
+// إجابات الاستبانة: { 'axis1_0': 5, 'axis2_1': 3, ... }
+const SQ = {};
+let SQ_TOTAL = 0;
+SURVEY_AXES.forEach(ax => { SQ_TOTAL += ax.items.length; });
+
+// ── بناء واجهة الاستبانة ──────────────────────────────────────
+function renderSurvey() {
+  let globalIdx = 0;
+  SURVEY_AXES.forEach(ax => {
+    const container = document.getElementById(ax.containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    ax.items.forEach((q, i) => {
+      globalIdx++;
+      const key = ax.id + '_' + i;
+      const div = document.createElement('div');
+      div.className = 'survey-item';
+      div.id = 'sq-item-' + key;
+      div.innerHTML = `
+        <div class="survey-q">
+          <span class="survey-q-num">${globalIdx}</span>
+          <span>${q}</span>
+        </div>
+        <div class="survey-scale">
+          ${SCALE_LABELS.map(s => `
+            <div class="survey-opt" id="sq-opt-${key}-${s.val}" onclick="pickSQ('${key}', ${s.val})">
+              <div class="survey-opt-dot"></div>
+              <span>${s.label}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      container.appendChild(div);
+    });
+  });
+  updateSurveyProgress();
+}
+
+// ── اختيار إجابة ────────────────────────────────────────────
+function pickSQ(key, val) {
+  // إلغاء تحديد القديم
+  SCALE_LABELS.forEach(s => {
+    const el = document.getElementById('sq-opt-' + key + '-' + s.val);
+    if (el) el.classList.remove('selected');
+  });
+  // تحديد الجديد
+  const el = document.getElementById('sq-opt-' + key + '-' + val);
+  if (el) el.classList.add('selected');
+  SQ[key] = val;
+  // إزالة تأثير التحذير عن هذا العنصر
+  const item = document.getElementById('sq-item-' + key);
+  if (item) item.style.border = '';
+  updateSurveyProgress();
+}
+
+// ── تحديث شريط التقدم ───────────────────────────────────────
+function updateSurveyProgress() {
+  const answered = Object.keys(SQ).length;
+  const pct = Math.round(answered / SQ_TOTAL * 100);
+  const fill = document.getElementById('survey-prog-fill');
+  const label = document.getElementById('survey-prog-label');
+  if (fill)  fill.style.width = pct + '%';
+  if (label) label.textContent = answered + ' / ' + SQ_TOTAL;
+}
+
+// ── التحقق وإرسال الاستبانة ──────────────────────────────────
+function submitSurvey() {
+  // التحقق من اكتمال جميع الإجابات
+  const unanswered = [];
+  SURVEY_AXES.forEach(ax => {
+    ax.items.forEach((q, i) => {
+      const key = ax.id + '_' + i;
+      if (SQ[key] === undefined) unanswered.push(key);
+    });
+  });
+
+  if (unanswered.length > 0) {
+    // تمييز العبارات غير المُجاب عنها
+    unanswered.forEach(key => {
+      const item = document.getElementById('sq-item-' + key);
+      if (item) {
+        item.style.border = '1px solid var(--rose)';
+        item.style.borderRadius = '10px';
+        item.style.padding = '8px';
+      }
+    });
+    // تمرير للأول
+    const firstItem = document.getElementById('sq-item-' + unanswered[0]);
+    if (firstItem) firstItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    const warn = document.getElementById('survey-warning');
+    if (warn) {
+      warn.style.display = 'block';
+      warn.textContent = '⚠️ يُرجى الإجابة عن جميع العبارات (' + unanswered.length + ' عبارة لم تُجب عنها بعد)';
+    }
+    return;
+  }
+
+  // ── الإرسال ──────────────────────────────────────────────
+  const btn = document.getElementById('survey-submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ جارٍ الإرسال...';
+
+  // تجميع البيانات كنص للشيت
+  const axisAvgs = SURVEY_AXES.map(ax => {
+    const vals = ax.items.map((q, i) => SQ[ax.id + '_' + i] || 0);
+    const avg  = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2);
+    return avg;
+  });
+
+  const rawAnswers = [];
+  SURVEY_AXES.forEach(ax => {
+    ax.items.forEach((q, i) => rawAnswers.push(SQ[ax.id + '_' + i] || 0));
+  });
+
+  const surveyPayload = {
+    action:    'survey_pre',
+    name:      LEARNER.name,
+    email:     LEARNER.email,
+    school:    LEARNER.school,
+    role:      LEARNER.role || '',
+    stage:     LEARNER.stage || '',
+    subject:   LEARNER.subject || '',
+    ts:        new Date().toLocaleString('ar-QA'),
+    answers:   rawAnswers.join(','),
+    avg_axis1: axisAvgs[0],
+    avg_axis2: axisAvgs[1],
+    avg_axis3: axisAvgs[2],
+    total_avg: (rawAnswers.reduce((a,b)=>a+b,0) / rawAnswers.length).toFixed(2),
+  };
+
+  // حفظ في localStorage
+  localStorage.setItem('survey_pre_' + LEARNER.email, JSON.stringify(surveyPayload));
+
+  // إرسال للـ Web App
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
+  const params = new URLSearchParams(surveyPayload);
+
+  fetch(WEBAPP_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(data => {
+      console.log('Survey sent:', data);
+    })
+    .catch(err => {
+      console.warn('Survey send failed (data saved locally):', err);
+    })
+    .finally(() => {
+      // بغض النظر عن نجاح الإرسال، ننتقل للحقيبة
+      surveyPayload.sent = true;
+      localStorage.setItem('survey_pre_' + LEARNER.email, JSON.stringify(surveyPayload));
+      // وضع علامة الإتمام في الـ progress
+      S.surveyDone = true;
+      saveProgress();
+      // الانتقال للحقيبة
+      document.getElementById('survey-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      go('u1');
+      toast('✅ تم تسجيل استبانتك — أهلاً بك في الحقيبة!');
+    });
+}
+
+
 
 // ═══════════════════════════════════════════
 // NAVIGATION
