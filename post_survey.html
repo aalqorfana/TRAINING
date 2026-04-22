@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الاستبانة البعدية — المعلم الذكي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0C1320;
+  --bg2:    #121A2D;
+  --bg3:    #182236;
+  --bg4:    #1E2A40;
+  --teal:   #0ABFAD;
+  --teal2:  #12D9C4;
+  --td:     rgba(10,191,173,0.13);
+  --tg:     rgba(10,191,173,0.22);
+  --amber:  #F5A623;
+  --amber2: #FFD07A;
+  --ad:     rgba(245,166,35,0.11);
+  --rose:   #E85D75;
+  --rd:     rgba(232,93,117,0.13);
+  --green:  #22C55E;
+  --gd:     rgba(34,197,94,0.10);
+  --text:   #EDF1FF;
+  --text2:  #AAB4D0;
+  --text3:  #636B8E;
+  --b:      rgba(255,255,255,0.06);
+  --b2:     rgba(255,255,255,0.11);
+  --bt:     rgba(10,191,173,0.24);
+  --ba:     rgba(245,166,35,0.24);
+  --r:      10px;
+  --rl:     20px;
+  --rxl:    24px;
+  --font:   'Tajawal', sans-serif;
+  --stl:    0 4px 28px rgba(10,191,173,0.17);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 16px 80px;
+  direction: rtl;
+}
+
+/* ── Header ── */
+.page-header {
+  max-width: 760px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+.brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.brand-icon { font-size: 32px; }
+.brand-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--teal2);
+  letter-spacing: .3px;
+}
+.page-title {
+  font-size: 28px;
+  font-weight: 900;
+  background: linear-gradient(130deg, var(--text) 40%, var(--teal2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+}
+.page-sub {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.8;
+}
+
+/* ── Token Input ── */
+.token-card {
+  max-width: 480px;
+  margin: 0 auto 28px;
+  background: var(--bg2);
+  border: 1px solid var(--bt);
+  border-radius: var(--rxl);
+  padding: 28px 26px;
+  text-align: center;
+}
+.token-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text2);
+  margin-bottom: 12px;
+}
+.token-input {
+  width: 100%;
+  padding: 13px 16px;
+  background: var(--bg3);
+  border: 1px solid var(--b2);
+  border-radius: var(--r);
+  color: var(--text);
+  font-family: monospace;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-align: center;
+  direction: ltr;
+  outline: none;
+  transition: border-color .2s;
+}
+.token-input:focus { border-color: var(--teal); }
+.token-btn {
+  width: 100%;
+  margin-top: 14px;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--teal), #08b09e);
+  border: none;
+  border-radius: var(--rl);
+  color: #0C1320;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .2s;
+  box-shadow: var(--stl);
+}
+.token-btn:hover { transform: translateY(-1px); }
+.token-error {
+  color: var(--rose);
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 10px;
+  display: none;
+}
+
+/* ── Learner info banner ── */
+.learner-banner {
+  max-width: 760px;
+  margin: 0 auto 20px;
+  background: var(--td);
+  border: 1px solid var(--bt);
+  border-radius: var(--r);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  display: none;
+}
+.learner-banner .lb-icon { font-size: 22px; }
+.learner-banner .lb-info { flex: 1; font-size: 14px; color: var(--teal2); font-weight: 600; }
+.learner-banner .lb-sub  { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+/* ── Progress ── */
+.prog-wrap {
+  max-width: 760px;
+  margin: 0 auto 18px;
+  background: var(--bg3);
+  border: 1px solid var(--b2);
+  border-radius: var(--rxl);
+  padding: 14px 22px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  display: none;
+}
+.prog-bar {
+  flex: 1;
+  height: 8px;
+  background: var(--bg4);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), var(--teal2));
+  border-radius: 10px;
+  transition: width .4s ease;
+  width: 0%;
+}
+.prog-label { font-size: 13px; font-weight: 700; color: var(--teal2); white-space: nowrap; }
+
+/* ── Survey body ── */
+#survey-body { max-width: 760px; margin: 0 auto; display: none; }
+
+.axis-card {
+  background: var(--bg3);
+  border: 1px solid var(--b2);
+  border-radius: var(--rxl);
+  padding: 22px 26px;
+  margin-bottom: 18px;
+}
+.axis-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--amber2);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--b2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.survey-item {
+  margin-bottom: 20px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--b);
+}
+.survey-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+.survey-q {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  line-height: 1.8;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.q-num {
+  background: var(--td);
+  color: var(--teal2);
+  font-size: 12px;
+  font-weight: 800;
+  padding: 2px 9px;
+  border-radius: 10px;
+  white-space: nowrap;
+  margin-top: 2px;
+}
+
+.scale {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 7px;
+}
+.scale-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px 4px;
+  border-radius: 10px;
+  border: 1px solid var(--b2);
+  background: var(--bg4);
+  transition: all .2s;
+  font-size: 12px;
+  color: var(--text2);
+  text-align: center;
+  line-height: 1.4;
+  user-select: none;
+}
+.scale-opt:hover { border-color: var(--teal); background: var(--td); color: var(--teal2); }
+.scale-opt.sel   { border-color: var(--teal); background: var(--tg); color: var(--teal2); font-weight: 700; }
+.opt-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--b2);
+  transition: all .2s;
+}
+.scale-opt.sel .opt-dot {
+  border-color: var(--teal);
+  background: var(--teal);
+  box-shadow: 0 0 8px rgba(10,191,173,0.4);
+}
+
+/* ── Warning & submit ── */
+.warn-box {
+  max-width: 760px;
+  margin: 0 auto 14px;
+  background: var(--rd);
+  border: 1px solid var(--rose);
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 13px;
+  color: var(--rose);
+  font-weight: 700;
+  text-align: center;
+  display: none;
+}
+.submit-btn {
+  display: block;
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 17px;
+  background: linear-gradient(135deg, var(--teal), #08b09e);
+  border: none;
+  border-radius: var(--rl);
+  color: #0C1320;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: var(--font);
+  transition: all .25s;
+  box-shadow: var(--stl);
+  display: none;
+}
+.submit-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 36px rgba(10,191,173,0.32); }
+.submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+
+/* ── Thank you screen ── */
+#thankyou {
+  max-width: 520px;
+  margin: 60px auto;
+  background: var(--bg2);
+  border: 1px solid var(--bt);
+  border-radius: var(--rxl);
+  padding: 40px 36px;
+  text-align: center;
+  display: none;
+}
+.ty-icon { font-size: 56px; margin-bottom: 16px; }
+.ty-title { font-size: 24px; font-weight: 900; color: var(--amber2); margin-bottom: 10px; }
+.ty-sub   { font-size: 15px; color: var(--text2); line-height: 1.8; }
+.ty-stats {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 22px 0;
+}
+.ty-stat {
+  background: var(--td);
+  border: 1px solid var(--bt);
+  border-radius: 12px;
+  padding: 14px 18px;
+  min-width: 110px;
+}
+.ty-stat-val { font-size: 26px; font-weight: 900; color: var(--teal2); }
+.ty-stat-lbl { font-size: 12px; color: var(--text2); margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="brand-row">
+    <span class="brand-icon">🧠</span>
+    <span class="brand-name">AHK TRAINING — حقيبة المعلم الذكي</span>
+  </div>
+  <div class="page-title">الاستبانة البعدية</div>
+  <div class="page-sub">
+    تقيس هذه الاستبانة أثر البرنامج على ممارستك التعليمية بعد مرور شهر من إتمامه.<br>
+    إجاباتك سرية وتُستخدم لأغراض البحث التربوي فقط — يُرجى الصدق والدقة.
+  </div>
+</div>
+
+<!-- Token input -->
+<div class="token-card" id="token-card">
+  <div class="token-label">🔑 أدخل كود الدخول الخاص بك للتحقق من هويتك</div>
+  <input class="token-input" id="token-input"
+    placeholder="XXXX-XXXX-XXXX"
+    maxlength="14"
+    oninput="formatToken(this)"
+    onkeydown="if(event.key==='Enter') verifyToken()">
+  <div id="token-error" class="token-error">❌ الكود غير صحيح أو لم تُكمل الاستبانة القبلية</div>
+  <button class="token-btn" onclick="verifyToken()">تحقق وابدأ الاستبانة ←</button>
+</div>
+
+<!-- Learner banner -->
+<div class="learner-banner" id="learner-banner">
+  <span class="lb-icon">👤</span>
+  <div class="lb-info">
+    <div id="lb-name"></div>
+    <div class="lb-sub" id="lb-details"></div>
+  </div>
+</div>
+
+<!-- Progress -->
+<div class="prog-wrap" id="prog-wrap">
+  <div style="font-size:13px;color:var(--text2)">تقدّمك:</div>
+  <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  <div class="prog-label" id="prog-label">0 / 17</div>
+</div>
+
+<!-- Survey body -->
+<div id="survey-body">
+  <div class="axis-card">
+    <div class="axis-title"><span>⚡</span> المحور الأول: الكفاءة التشغيلية والعبء الوظيفي</div>
+    <div id="axis1"></div>
+  </div>
+  <div class="axis-card">
+    <div class="axis-title"><span>🎯</span> المحور الثاني: الممارسات الصفية واستراتيجيات التدريس</div>
+    <div id="axis2"></div>
+  </div>
+  <div class="axis-card">
+    <div class="axis-title"><span>🌱</span> المحور الثالث: الانغماس المهني والتجديد الذاتي</div>
+    <div id="axis3"></div>
+  </div>
+</div>
+
+<div class="warn-box"  id="warn-box"></div>
+<button class="submit-btn" id="submit-btn" onclick="submitSurvey()">إرسال الاستبانة ←</button>
+
+<!-- Thank you -->
+<div id="thankyou">
+  <div class="ty-icon">🏅</div>
+  <div class="ty-title" id="ty-title">شكراً لمشاركتك!</div>
+  <div class="ty-stats" id="ty-stats"></div>
+  <div class="ty-sub" id="ty-sub"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════
+const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
+
+const AXES = [
+  {
+    id: 'axis1',
+    items: [
+      'أُحضِّر للدروس اليومية في غضون ما يتراوح بين (30–45) دقيقة في المتوسط.',
+      'أجد صعوبة في صياغة اختبارات تقييمية متنوعة الأنماط بصورة منتظمة.',
+      'يستغرق إعداد تقارير الطلاب وقتاً يُلقي بأثر سلبي على تخطيطي التدريسي.',
+      'أشعر بالاستنزاف المهني في نهاية الأسبوع جراء الأعباء الإدارية والتحضيرية.',
+      'أستطيع إنتاج مواد تعليمية متمايزة تُراعي مستويات طلابي المختلفة بكفاءة.',
+      'أتمكن من توظيف تقنيات الذكاء الاصطناعي في تصميم مواردي التدريسية.',
+      'لديّ ثقة كافية بقدرتي على تكييف المحتوى الدراسي لاحتياجات التعلم المختلفة.',
+    ]
+  },
+  {
+    id: 'axis2',
+    items: [
+      'أُنوِّع في استراتيجيات التدريس داخل الحصة الواحدة بانتظام.',
+      'أُصمِّم أنشطة تُحفّز التفكير النقدي والإبداعي لدى طلابي.',
+      'أوظّف المشاريع التكاملية وربط التخصصات في تدريسي.',
+      'أستطيع تقديم تغذية راجعة فردية لكل طالب ضمن زمن الحصة.',
+      'يتاح لي توقيت كافٍ لإجراء التقييم التكويني المستمر أثناء الدرس.',
+    ]
+  },
+  {
+    id: 'axis3',
+    items: [
+      'أبحث بانتظام عن أدوات وتقنيات تعليمية حديثة لتطوير ممارستي.',
+      'أشعر بالحماس والرغبة في تجريب أساليب تدريسية مبتكرة.',
+      'أُشارك بفاعلية في مجتمعات التعلم المهني مع زملائي.',
+      'أُدرك أن الذكاء الاصطناعي شريك استراتيجي وليس بديلاً عن الكفاءة المهنية.',
+      'أشعر أن مستوى تطوري المهني يسير بوتيرة مُرضِية وفق متطلبات المرحلة.',
+    ]
+  }
+];
+
+const SCALE = [
+  { val:5, label:'موافق بشدة' },
+  { val:4, label:'موافق' },
+  { val:3, label:'محايد' },
+  { val:2, label:'غير موافق' },
+  { val:1, label:'غير موافق بشدة' },
+];
+
+const TOTAL = AXES.reduce((s,a)=>s+a.items.length,0); // 17
+const ANS   = {};  // key => value
+let LEARNER = null;
+
+// ── Token formatting ──────────────────────────────────────────
+function formatToken(el) {
+  let v = el.value.replace(/[^A-Za-z0-9]/g,'').toUpperCase().slice(0,12);
+  let out = '';
+  for (let i=0;i<v.length;i++) { if(i>0&&i%4===0) out+='-'; out+=v[i]; }
+  el.value = out;
+}
+
+// ── Verify code via WEBAPP ────────────────────────────────────
+function verifyToken() {
+  const raw = document.getElementById('token-input').value.trim().toUpperCase();
+  const err = document.getElementById('token-error');
+  err.style.display = 'none';
+
+  if (raw.length < 14) {
+    err.textContent = '⚠️ أدخل الكود كاملاً (12 حرف بالشكل XXXX-XXXX-XXXX)';
+    err.style.display = 'block'; return;
+  }
+
+  const btn = document.querySelector('.token-btn');
+  btn.textContent = '⏳ جارٍ التحقق...'; btn.disabled = true;
+
+  fetch(WEBAPP_URL + '?code=' + encodeURIComponent(raw))
+    .then(r => r.json())
+    .then(data => {
+      btn.textContent = 'تحقق وابدأ الاستبانة ←'; btn.disabled = false;
+      if (data.valid) {
+        LEARNER = data.learner;
+        LEARNER.code = raw;
+        startSurvey();
+      } else {
+        err.textContent = '❌ الكود غير صحيح — تحقق من الإيميل الذي أرسله الميسّر';
+        err.style.display = 'block';
+      }
+    })
+    .catch(() => {
+      btn.textContent = 'تحقق وابدأ الاستبانة ←'; btn.disabled = false;
+      err.textContent = '⚠️ تعذّر الاتصال — تحقق من الإنترنت وأعد المحاولة';
+      err.style.display = 'block';
+    });
+}
+
+// ── Start survey after verification ──────────────────────────
+function startSurvey() {
+  document.getElementById('token-card').style.display    = 'none';
+  document.getElementById('learner-banner').style.display = 'flex';
+  document.getElementById('prog-wrap').style.display     = 'flex';
+  document.getElementById('survey-body').style.display   = 'block';
+  document.getElementById('submit-btn').style.display    = 'block';
+
+  document.getElementById('lb-name').textContent    = '👤 ' + LEARNER.name;
+  document.getElementById('lb-details').textContent =
+    (LEARNER.school || '') + '  ·  ' + (LEARNER.subject || '') + '  ·  ' + (LEARNER.role || '');
+
+  renderSurvey();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Render questions ──────────────────────────────────────────
+function renderSurvey() {
+  let globalIdx = 0;
+  AXES.forEach(ax => {
+    const container = document.getElementById(ax.id);
+    container.innerHTML = '';
+    ax.items.forEach((q, i) => {
+      globalIdx++;
+      const key = ax.id + '_' + i;
+      const div = document.createElement('div');
+      div.className = 'survey-item';
+      div.id = 'item-' + key;
+      div.innerHTML = `
+        <div class="survey-q">
+          <span class="q-num">${globalIdx}</span>
+          <span>${q}</span>
+        </div>
+        <div class="scale">
+          ${SCALE.map(s=>`
+            <div class="scale-opt" id="opt-${key}-${s.val}" onclick="pick('${key}',${s.val})">
+              <div class="opt-dot"></div>
+              <span>${s.label}</span>
+            </div>`).join('')}
+        </div>`;
+      container.appendChild(div);
+    });
+  });
+}
+
+// ── Pick answer ───────────────────────────────────────────────
+function pick(key, val) {
+  SCALE.forEach(s => {
+    const el = document.getElementById('opt-'+key+'-'+s.val);
+    if(el) el.classList.remove('sel');
+  });
+  const el = document.getElementById('opt-'+key+'-'+val);
+  if(el) el.classList.add('sel');
+  ANS[key] = val;
+  const item = document.getElementById('item-'+key);
+  if(item) { item.style.border=''; item.style.borderRadius=''; item.style.padding=''; }
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = Object.keys(ANS).length;
+  const pct = Math.round(answered / TOTAL * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = answered + ' / ' + TOTAL;
+}
+
+// ── Submit ────────────────────────────────────────────────────
+function submitSurvey() {
+  // Validation
+  const missing = [];
+  AXES.forEach(ax => {
+    ax.items.forEach((q,i) => {
+      if (ANS[ax.id+'_'+i] === undefined) missing.push(ax.id+'_'+i);
+    });
+  });
+
+  if (missing.length > 0) {
+    missing.forEach(key => {
+      const item = document.getElementById('item-'+key);
+      if(item) {
+        item.style.border      = '1px solid var(--rose)';
+        item.style.borderRadius = '10px';
+        item.style.padding     = '8px';
+      }
+    });
+    document.getElementById('item-'+missing[0])
+      .scrollIntoView({ behavior:'smooth', block:'center' });
+    const w = document.getElementById('warn-box');
+    w.style.display = 'block';
+    w.textContent   = '⚠️ يُرجى الإجابة عن جميع العبارات — تبقّى ' + missing.length + ' عبارة';
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = '⏳ جارٍ الإرسال...';
+
+  // Build payload
+  const rawAnswers = [];
+  AXES.forEach(ax => ax.items.forEach((q,i) => rawAnswers.push(ANS[ax.id+'_'+i]||0)));
+
+  const axisAvgs = AXES.map(ax => {
+    const vals = ax.items.map((q,i)=>ANS[ax.id+'_'+i]||0);
+    return (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2);
+  });
+
+  const totalAvg = (rawAnswers.reduce((a,b)=>a+b,0)/rawAnswers.length).toFixed(2);
+
+  const params = new URLSearchParams({
+    action:    'survey_post',
+    code:      LEARNER.code || '',
+    name:      LEARNER.name,
+    email:     LEARNER.email,
+    school:    LEARNER.school  || '',
+    role:      LEARNER.role    || '',
+    stage:     LEARNER.stage   || '',
+    subject:   LEARNER.subject || '',
+    ts:        new Date().toLocaleString('ar-QA'),
+    answers:   rawAnswers.join(','),
+    avg_axis1: axisAvgs[0],
+    avg_axis2: axisAvgs[1],
+    avg_axis3: axisAvgs[2],
+    total_avg: totalAvg,
+  });
+
+  fetch(WEBAPP_URL + '?' + params.toString())
+    .then(r => r.json())
+    .then(data => showThankYou(totalAvg, axisAvgs, data))
+    .catch(() => showThankYou(totalAvg, axisAvgs, { ok: true, offline: true }));
+}
+
+// ── Thank you screen ──────────────────────────────────────────
+function showThankYou(totalAvg, axisAvgs, data) {
+  document.getElementById('survey-body').style.display  = 'none';
+  document.getElementById('submit-btn').style.display   = 'none';
+  document.getElementById('warn-box').style.display     = 'none';
+  document.getElementById('prog-wrap').style.display    = 'none';
+  document.getElementById('learner-banner').style.display = 'none';
+
+  const ty = document.getElementById('thankyou');
+  ty.style.display = 'block';
+
+  const axNames = ['الكفاءة التشغيلية', 'الممارسات الصفية', 'الانغماس المهني'];
+  document.getElementById('ty-title').textContent =
+    'شكراً ' + (LEARNER ? LEARNER.name : '') + '!';
+
+  document.getElementById('ty-stats').innerHTML =
+    axisAvgs.map((avg, i) => `
+      <div class="ty-stat">
+        <div class="ty-stat-val">${avg}</div>
+        <div class="ty-stat-lbl">${axNames[i]}</div>
+      </div>`).join('') +
+    `<div class="ty-stat" style="border-color:var(--ba);background:var(--ad)">
+      <div class="ty-stat-val" style="color:var(--amber2)">${totalAvg}</div>
+      <div class="ty-stat-lbl">المتوسط الكلي / 5</div>
+    </div>`;
+
+  document.getElementById('ty-sub').innerHTML =
+    'تم تسجيل إجاباتك بنجاح وأُرسلت لفريق البحث.<br>' +
+    'ستُستخدم نتائجك لتطوير برامج التدريب المهني في دولة قطر.';
+}
+</script>
+</body>
+</html>
