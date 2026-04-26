@@ -1115,7 +1115,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
 <!-- ══════════════════════════════════
      COVER PAGE
 ══════════════════════════════════ -->
-<div class="page active" id="page-cover">
+<div class="page" id="page-cover">
   <div class="cover-hero">
     <div class="cover-badge">⚡ حقيبة تدريبية متكاملة · ٤ وحدات</div>
     <div class="cover-icon">🧠</div>
@@ -2522,9 +2522,16 @@ function submitSurvey() {
 // NAVIGATION
 // ═══════════════════════════════════════════
 function go(page) {
+  // تأكد أن survey-screen مخفي وapp ظاهر
+  const sv = document.getElementById('survey-screen');
+  if (sv) sv.style.display = 'none';
+  const appEl = document.getElementById('app');
+  if (appEl) { appEl.style.display = 'block'; appEl.classList.add('app-ready'); }
+
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + page)?.classList.add('active');
+  const target = document.getElementById('page-' + page);
+  if (target) target.classList.add('active');
   document.getElementById('nav-' + page)?.classList.add('active');
   if (page === 'cert') renderCert();
   window.scrollTo({ top:0, behavior:'smooth' });
