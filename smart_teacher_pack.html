@@ -2030,7 +2030,7 @@ function verifyCode() {
   const btn = document.querySelector('#code-screen .reg-btn');
   if (btn) { btn.textContent = '⏳ جارٍ التحقق...'; btn.disabled = true; }
 
-  const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
+  const VERIFY_URL = 'https://script.google.com/macros/s/AKfycbx_mUzuXpaLIPAeGG8ttq13vEQOsm2BmeKkh_Ot-abQ2hmWCXcO2VRAXI8QrkbDGq6yYg/exec';
 
   fetch(VERIFY_URL + '?code=' + encodeURIComponent(raw))
     .then(function(r) { return r.json(); })
@@ -2465,7 +2465,7 @@ function submitSurvey() {
   localStorage.setItem('survey_pre_' + LEARNER.email, JSON.stringify(surveyPayload));
 
   // إرسال للـ Web App
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx_mUzuXpaLIPAeGG8ttq13vEQOsm2BmeKkh_Ot-abQ2hmWCXcO2VRAXI8QrkbDGq6yYg/exec';
   const params = new URLSearchParams(surveyPayload);
 
   fetch(WEBAPP_URL + '?' + params.toString())
@@ -2688,7 +2688,7 @@ function sendReport() {
 
 // إرسال مباشر للـ Web App عبر GET — متوافق مع CORS
 function sendReportDirect() {
-  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbynP7NCEcgQPfHlRngkdPrUV3HcYU-mL1EGn6xSebfODJ3_wbfEWIabsi6xNR17MWNZ_A/exec';
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx_mUzuXpaLIPAeGG8ttq13vEQOsm2BmeKkh_Ot-abQ2hmWCXcO2VRAXI8QrkbDGq6yYg/exec';
   const pct   = Math.round(S.qScore / QUIZ.length * 100);
   const pass_ = pct >= 70 ? 'ناجح ✓' : 'راسب ✗';
   const units = ['u1','u2','u3','u4','prompts'].filter(k => S.done[k]).length;
