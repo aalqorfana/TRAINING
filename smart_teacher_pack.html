@@ -363,8 +363,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
   .app-body{grid-template-columns:1fr}
   .sidebar{display:none}
   .main{padding:20px 22px;padding-bottom:90px}
-  #mobile-nav{display:block}
-  #mobile-progress-bar{display:block;top:0}
+  #mobile-nav{display:none}
+  #mobile-progress-bar{display:none;top:0}
+  #app.app-ready #mobile-nav{display:block}
+  #app.app-ready #mobile-progress-bar{display:block}
   .app-header{padding:10px 18px}
   .brand-text p{display:none}
   .lp-stats{grid-template-columns:repeat(2,1fr)}
@@ -384,8 +386,10 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
   .app-body{grid-template-columns:1fr}
   .sidebar{display:none}
   .main{padding:14px 12px;padding-bottom:88px}
-  #mobile-nav{display:block}
-  #mobile-progress-bar{display:block}
+  #mobile-nav{display:none}
+  #mobile-progress-bar{display:none}
+  #app.app-ready #mobile-nav{display:block}
+  #app.app-ready #mobile-progress-bar{display:block}
 
   /* Header */
   .app-header{padding:10px 14px}
@@ -2064,7 +2068,10 @@ function launchKit() {
 
   // ── إظهار التطبيق الرئيسي ─────────────────────────────────
   const appEl = document.getElementById('app');
-  if (appEl) appEl.style.display = 'block';
+  if (appEl) {
+    appEl.style.display = 'block';
+    appEl.classList.add('app-ready');
+  }
 
   // ── تهيئة عناصر الهيدر دائماً ─────────────────────────────
   if (document.getElementById('hdr-name'))
@@ -2102,7 +2109,7 @@ function launchKit() {
 
     // ── وضع الخريج: أنهى التدريب وحصل على شهادة ──
     if (S.qSent) {
-      document.getElementById('app').style.display = 'block';
+      const _appEl1 = document.getElementById('app'); if(_appEl1){_appEl1.style.display='block';_appEl1.classList.add('app-ready');}
       showGraduateMode(saved.savedAt);
       return;
     }
@@ -2115,7 +2122,7 @@ function launchKit() {
 
     if (doneCount > 0) {
       // لديه تقدم — الاستبانة مكتملة بالتأكيد، استأنف مباشرة
-      document.getElementById('app').style.display = 'block';
+      const _appEl2 = document.getElementById('app'); if(_appEl2){_appEl2.style.display='block';_appEl2.classList.add('app-ready');}
       toast('▶ استكمال من ' + (pageNames[resumePage] || resumePage) + ' — تقدمك: ' + Math.round(doneCount/5*100) + '%');
       setTimeout(() => go(resumePage), 600);
     } else {
@@ -2136,13 +2143,13 @@ function checkAndShowSurvey() {
   const done = localStorage.getItem(surveyKey);
   if (done || (S && S.surveyDone)) {
     // الاستبانة مكتملة — افتح الحقيبة مباشرة
-    document.getElementById('app').style.display = 'block';
+    const appEl = document.getElementById('app');
+    if (appEl) { appEl.style.display = 'block'; appEl.classList.add('app-ready'); }
     go('u1');
   } else {
     // الاستبانة لم تُكمل — اعرض شاشة الاستبانة
     document.getElementById('survey-screen').style.display = 'flex';
     renderSurvey();
-    // تمرير للأعلى
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
@@ -2461,20 +2468,23 @@ function submitSurvey() {
     total_avg: (rawAnswers.reduce((a,b)=>a+b,0) / rawAnswers.length).toFixed(2),
   };
 
-  // حفظ في localStorage
+  // حفظ في localStorage (دائماً — حتى لو فشل الإرسال)
   localStorage.setItem('survey_pre_' + LEARNER.email, JSON.stringify(surveyPayload));
 
-  // إرسال للـ Web App
+  // إرسال للـ Web App عبر GET
   const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx_mUzuXpaLIPAeGG8ttq13vEQOsm2BmeKkh_Ot-abQ2hmWCXcO2VRAXI8QrkbDGq6yYg/exec';
-  const params = new URLSearchParams(surveyPayload);
 
-  fetch(WEBAPP_URL + '?' + params.toString())
+  // بناء الـ URL يدوياً لضمان الترميز الصحيح
+  const qParams = Object.keys(surveyPayload).map(k =>
+    encodeURIComponent(k) + '=' + encodeURIComponent(surveyPayload[k])
+  ).join('&');
+
+  fetch(WEBAPP_URL + '?' + qParams)
     .then(r => r.json())
-    .then(data => {
-      console.log('Survey sent:', data);
-    })
-    .catch(err => {
-      console.warn('Survey send failed (data saved locally):', err);
+    .then(data => { console.log('Survey pre sent OK:', data); })
+    .catch(() => {
+      // محاولة ثانية بدون قراءة الرد (no-cors)
+      fetch(WEBAPP_URL + '?' + qParams, { mode: 'no-cors' }).catch(() => {});
     })
     .finally(() => {
       // بغض النظر عن نجاح الإرسال، ننتقل للحقيبة
@@ -2485,7 +2495,16 @@ function submitSurvey() {
       saveProgress();
       // الانتقال للحقيبة
       document.getElementById('survey-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
+      const appEl = document.getElementById('app');
+      if (appEl) {
+        appEl.style.display = 'block';
+        appEl.classList.add('app-ready');
+      }
+      // تهيئة mobile nav
+      if (typeof showMobileNavIfNeeded === 'function') {
+        showMobileNavIfNeeded();
+        if (typeof syncMobileDone === 'function') syncMobileDone();
+      }
       go('u1');
       toast('✅ تم تسجيل استبانتك — أهلاً بك في الحقيبة!');
     });
@@ -3000,13 +3019,8 @@ function markDone(key) {
 
 // Show/hide mobile nav when app is shown
 function showMobileNavIfNeeded() {
-  const isMobile = window.innerWidth <= 900;
-  const mNav = document.getElementById('mobile-nav');
-  const mBar = document.getElementById('mobile-progress-bar');
-  if (isMobile) {
-    if (mNav) mNav.style.display = 'block';
-    if (mBar) mBar.style.display = 'block';
-  }
+  const appEl = document.getElementById('app');
+  if (appEl) appEl.classList.add('app-ready');
 }
 
 // Override showApp / enterKit to init mobile nav
