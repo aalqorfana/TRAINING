@@ -736,8 +736,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);direction:rt
 /* Initial visibility — controlled by DOMContentLoaded */
 #landing { display: none; }
 #code-screen { display: none; }
-.app-header { display: none; }
-.app-body { display: none; }
+#app { display: none; }
 
 </style>
 </head>
@@ -2516,6 +2515,11 @@ function showApp() {
     appEl.style.display = 'block';
     appEl.classList.add('app-ready');
   }
+  // إظهار app-header و app-body صراحةً
+  const hdr = document.querySelector('.app-header');
+  if (hdr) hdr.style.display = 'flex';
+  const body = document.querySelector('.app-body');
+  if (body) body.style.display = 'grid';
 }
 
 function go(page) {
