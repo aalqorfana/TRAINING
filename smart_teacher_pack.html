@@ -2063,21 +2063,10 @@ function verifyCode() {
 }
 
 function launchKit() {
-  // إخفاء شاشات الدخول
-  document.getElementById('code-screen').style.display  = 'none';
-  if (document.getElementById('reg-screen'))
-    document.getElementById('reg-screen').style.display = 'none';
-  if (document.getElementById('landing'))
-    document.getElementById('landing').style.display    = 'none';
-
-  // ── إظهار التطبيق الرئيسي دائماً (الخلفية والهيكل) ─────────
-  const appEl = document.getElementById('app');
-  if (appEl) {
-    appEl.style.display = 'block';
-    appEl.classList.add('app-ready');
-  }
+  // إظهار التطبيق وإخفاء كل شاشات الدخول
+  showApp();
   // إخفاء جميع الصفحات — go() ستُظهر الصفحة الصحيحة
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = ''; });
 
   // ── تهيئة عناصر الهيدر دائماً ─────────────────────────────
   if (document.getElementById('hdr-name'))
@@ -2148,13 +2137,11 @@ function checkAndShowSurvey() {
   const surveyKey = 'survey_pre_' + LEARNER.email;
   const done = localStorage.getItem(surveyKey);
   if (done || (S && S.surveyDone)) {
-    // الاستبانة مكتملة — افتح الحقيبة مباشرة
-    const appEl = document.getElementById('app');
-    if (appEl) { appEl.style.display = 'block'; appEl.classList.add('app-ready'); }
     go('u1');
   } else {
-    // الاستبانة لم تُكمل — اعرض شاشة الاستبانة
-    document.getElementById('survey-screen').style.display = 'flex';
+    // أظهر الاستبانة فوق التطبيق (position:fixed)
+    const sv = document.getElementById('survey-screen');
+    if (sv) sv.style.display = 'flex';
     renderSurvey();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -2485,35 +2472,35 @@ function submitSurvey() {
     encodeURIComponent(k) + '=' + encodeURIComponent(surveyPayload[k])
   ).join('&');
 
-  fetch(WEBAPP_URL + '?' + qParams)
-    .then(r => r.json())
-    .then(data => { console.log('Survey pre sent OK:', data); })
-    .catch(() => {
-      // محاولة ثانية بدون قراءة الرد (no-cors)
-      fetch(WEBAPP_URL + '?' + qParams, { mode: 'no-cors' }).catch(() => {});
-    })
-    .finally(() => {
-      // بغض النظر عن نجاح الإرسال، ننتقل للحقيبة
-      surveyPayload.sent = true;
-      localStorage.setItem('survey_pre_' + LEARNER.email, JSON.stringify(surveyPayload));
-      // وضع علامة الإتمام في الـ progress
-      S.surveyDone = true;
-      saveProgress();
-      // الانتقال للحقيبة
-      document.getElementById('survey-screen').style.display = 'none';
-      const appEl = document.getElementById('app');
-      if (appEl) {
-        appEl.style.display = 'block';
-        appEl.classList.add('app-ready');
-      }
-      // تهيئة mobile nav
-      if (typeof showMobileNavIfNeeded === 'function') {
-        showMobileNavIfNeeded();
-        if (typeof syncMobileDone === 'function') syncMobileDone();
-      }
-      go('u1');
-      toast('✅ تم تسجيل استبانتك — أهلاً بك في الحقيبة!');
-    });
+  // ── الانتقال للحقيبة فوراً ──
+  surveyPayload.sent = true;
+  try { localStorage.setItem('survey_pre_' + LEARNER.email, JSON.stringify(surveyPayload)); } catch(e){}
+  S.surveyDone = true;
+  try { saveProgress(); } catch(e){}
+
+  // إخفاء survey بشكل صريح ومباشر
+  const svEl = document.getElementById('survey-screen');
+  if (svEl) { svEl.style.display = 'none'; svEl.style.visibility = 'hidden'; svEl.style.zIndex = '-1'; }
+
+  // إظهار app وpage-u1 بشكل مباشر بدون استدعاء go()
+  const appDiv = document.getElementById('app');
+  if (appDiv) { appDiv.style.cssText = 'display:block !important'; appDiv.classList.add('app-ready'); }
+
+  const u1 = document.getElementById('page-u1');
+  if (u1) { u1.style.cssText = 'display:block !important'; u1.classList.add('active'); }
+
+  // أيضاً إخفاء باقي الصفحات
+  ['page-cover','page-u0','page-u2','page-u3','page-u4','page-prompts','page-cert'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) { el.classList.remove('active'); el.style.display = ''; }
+  });
+
+  window.scrollTo({ top:0, behavior:'smooth' });
+  window._currentPage = 'u1';
+  toast('✅ تم تسجيل استبانتك — أهلاً بك في الحقيبة!');
+
+  // إرسال للشيت في الخلفية (لا يؤثر على التنقل)
+  fetch(WEBAPP_URL + '?' + qParams, { mode: 'no-cors' }).catch(() => {});
 }
 
 
@@ -2521,17 +2508,32 @@ function submitSurvey() {
 // ═══════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════
-function go(page) {
-  // تأكد أن survey-screen مخفي وapp ظاهر
-  const sv = document.getElementById('survey-screen');
-  if (sv) sv.style.display = 'none';
+function showApp() {
+  // إخفاء كل شاشات الدخول
+  ['landing','code-screen','reg-screen','survey-screen'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  // إظهار التطبيق
   const appEl = document.getElementById('app');
-  if (appEl) { appEl.style.display = 'block'; appEl.classList.add('app-ready'); }
+  if (appEl) {
+    appEl.style.display = 'block';
+    appEl.classList.add('app-ready');
+  }
+}
 
+function go(page) {
+  // تأكد دائماً أن التطبيق ظاهر
+  showApp();
+
+  // أظهر الصفحة المطلوبة
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const target = document.getElementById('page-' + page);
-  if (target) target.classList.add('active');
+  if (target) {
+    target.classList.add('active');
+    target.style.display = 'block';
+  }
   document.getElementById('nav-' + page)?.classList.add('active');
   if (page === 'cert') renderCert();
   window.scrollTo({ top:0, behavior:'smooth' });
