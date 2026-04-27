@@ -2478,22 +2478,18 @@ function submitSurvey() {
   S.surveyDone = true;
   try { saveProgress(); } catch(e){}
 
-  // إخفاء survey بشكل صريح ومباشر
+  // إخفاء survey
   const svEl = document.getElementById('survey-screen');
-  if (svEl) { svEl.style.display = 'none'; svEl.style.visibility = 'hidden'; svEl.style.zIndex = '-1'; }
+  if (svEl) { svEl.style.display = 'none'; }
 
-  // إظهار app وpage-u1 بشكل مباشر بدون استدعاء go()
+  // إظهار app
   const appDiv = document.getElementById('app');
-  if (appDiv) { appDiv.style.cssText = 'display:block !important'; appDiv.classList.add('app-ready'); }
+  if (appDiv) { appDiv.style.display = 'block'; appDiv.classList.add('app-ready'); }
 
+  // إخفاء كل الصفحات ثم إظهار u1 فقط
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   const u1 = document.getElementById('page-u1');
-  if (u1) { u1.style.cssText = 'display:block !important'; u1.classList.add('active'); }
-
-  // أيضاً إخفاء باقي الصفحات
-  ['page-cover','page-u0','page-u2','page-u3','page-u4','page-prompts','page-cert'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) { el.classList.remove('active'); el.style.display = ''; }
-  });
+  if (u1) { u1.classList.add('active'); u1.style.display = 'block'; }
 
   window.scrollTo({ top:0, behavior:'smooth' });
   window._currentPage = 'u1';
