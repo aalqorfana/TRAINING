@@ -2065,7 +2065,7 @@ function launchKit() {
   // إظهار التطبيق وإخفاء كل شاشات الدخول
   showApp();
   // إخفاء جميع الصفحات — go() ستُظهر الصفحة الصحيحة
-  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = ''; });
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
 
   // ── تهيئة عناصر الهيدر دائماً ─────────────────────────────
   if (document.getElementById('hdr-name'))
@@ -2518,12 +2518,17 @@ function showApp() {
 }
 
 function go(page) {
-  // تأكد دائماً أن التطبيق ظاهر
+  // تأكد أن التطبيق ظاهر
   showApp();
 
-  // أظهر الصفحة المطلوبة
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  // أخفِ كل الصفحات بـ inline style (يتغلب على CSS)
+  document.querySelectorAll('.page').forEach(p => {
+    p.classList.remove('active');
+    p.style.display = 'none';
+  });
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  // أظهر الصفحة المطلوبة فقط
   const target = document.getElementById('page-' + page);
   if (target) {
     target.classList.add('active');
