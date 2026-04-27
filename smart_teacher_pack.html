@@ -2179,12 +2179,7 @@ function showGraduateMode(savedAt) {
   `;
   document.body.appendChild(banner);
 
-  // إخفاء أزرار "أكملت الوحدة" حتى لا يُعيد الإرسال
-  document.querySelectorAll('.done-btn').forEach(btn => {
-    btn.style.opacity = '0.5';
-    btn.style.pointerEvents = 'none';
-    btn.title = 'أتممت هذه الوحدة مسبقاً';
-  });
+  // لا نُعطّل أزرار الوحدات — المتدرب قد يراجع المحتوى
 
   // إخفاء زر "إرسال الإجابات" في صفحة الشهادة
   setTimeout(() => {
@@ -2592,7 +2587,8 @@ function markDone(key) {
   if (chk) chk.textContent = '✓';
   document.getElementById('nav-' + key)?.classList.add('done');
   updateProgress();
-  saveProgress(); // حفظ فوري بعد كل وحدة
+  saveProgress();
+  if (typeof syncMobileDone === 'function') syncMobileDone();
   const next = { u0:'u1', u1:'u2', u2:'u3', u3:'u4', u4:'prompts', prompts:'cert' };
   toast('✓ أحسنت! تم حفظ تقدمك تلقائياً');
   if (next[key]) setTimeout(() => go(next[key]), 900);
@@ -3025,12 +3021,7 @@ function closeMobileDrawer() {
   if (d) d.style.display = 'none';
 }
 
-// Override markDone to also sync mobile
-const _origMarkDone = typeof markDone === 'function' ? markDone : null;
-function markDone(key) {
-  if (_origMarkDone) _origMarkDone(key);
-  syncMobileDone();
-}
+// Mobile sync is now inside the main markDone — no override needed
 
 // Show/hide mobile nav when app is shown
 function showMobileNavIfNeeded() {
