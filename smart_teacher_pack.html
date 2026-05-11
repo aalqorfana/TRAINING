@@ -2204,21 +2204,14 @@ function submitReg() {
   const btn = document.getElementById('reg-submit-btn');
   btn.textContent = '⏳ جارٍ الإرسال...'; btn.disabled = true;
 
-  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScYWKmdARi-fQZ8RCUayK2QuS04qbAIVS5i3EgGSBgBwIa1Ww/formResponse';
-  const fd = new FormData();
-  fd.append('entry.655653386',  n);    // B — الاسم
-  fd.append('entry.2106187489', e);    // C — البريد
-  fd.append('entry.440095993',  sc);   // D — المدرسة
-  // E — الوظيفة (entry.2120408794) — radio button
-  if (ro === 'معلم' || ro === 'منسق') {
-    fd.append('entry.2120408794', ro);
-  } else {
-    fd.append('entry.2120408794', '__other_option__');
-    fd.append('entry.2120408794.other_option_response', ro);
-  }
-  fd.append('entry.956228020',  st);   // F — المرحلة الدراسية
-  fd.append('entry.1617408928', sub);  // G — المادة
-  fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' })
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx_mUzuXpaLIPAeGG8ttq13vEQOsm2BmeKkh_Ot-abQ2hmWCXcO2VRAXI8QrkbDGq6yYg/exec';
+  const regParams = new URLSearchParams({
+    action: 'register', name: n, email: e,
+    school: sc, role: ro, stage: st, subject: sub,
+    ts: new Date().toISOString()
+  });
+  fetch(WEBAPP_URL + '?' + regParams.toString())
+    .catch(() => fetch(WEBAPP_URL + '?' + regParams.toString(), { mode:'no-cors' }))
     .finally(() => {
       btn.style.display = 'none';
       document.getElementById('reg-success').style.display = 'block';
@@ -2829,17 +2822,28 @@ function landingReg() {
   const btn = document.getElementById('lp-reg-btn');
   btn.textContent = '⏳ جارٍ التسجيل...'; btn.disabled = true;
 
-  // إرسال للـ Google Form (الكود يُرسَل لاحقاً من الميسّر بعد الاعتماد)
-  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScYWKmdARi-fQZ8RCUayK2QuS04qbAIVS5i3EgGSBgBwIa1Ww/formResponse';
-  const fd = new FormData();
-  fd.append('entry.655653386', n);
-  fd.append('entry.2106187489', e);
-  fd.append('entry.440095993', sc);
-  if (ro==='معلم'||ro==='منسق') fd.append('entry.2120408794', ro);
-  else { fd.append('entry.2120408794','__other_option__'); fd.append('entry.2120408794.other_option_response', ro); }
-  fd.append('entry.956228020', st);
-  fd.append('entry.1617408928', sub);
-  fetch(FORM_URL, { method:'POST', body:fd, mode:'no-cors' }).catch(()=>{});
+  // إرسال للـ Web App مباشرة (أكثر موثوقية من Google Form)
+  const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbx_mUzuXpaLIPAeGG8ttq13vEQOsm2BmeKkh_Ot-abQ2hmWCXcO2VRAXI8QrkbDGq6yYg/exec';
+  const regParams = new URLSearchParams({
+    action:  'register',
+    name:    n,
+    email:   e,
+    school:  sc,
+    role:    ro,
+    stage:   st,
+    subject: sub,
+    ts:      new Date().toISOString()
+  });
+
+  fetch(WEBAPP_URL + '?' + regParams.toString())
+    .then(r => r.json())
+    .then(data => {
+      console.log('Registration sent:', data);
+    })
+    .catch(() => {
+      // fallback: no-cors
+      fetch(WEBAPP_URL + '?' + regParams.toString(), { mode: 'no-cors' }).catch(()=>{});
+    });
 
   // حفظ بيانات مؤقتة (بانتظار كود الاعتماد من الميسّر)
   try {
